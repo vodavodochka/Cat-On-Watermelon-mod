@@ -1,0 +1,1 @@
+Fun mode for playing with friends
