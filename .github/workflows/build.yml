@@ -47,11 +47,12 @@ jobs:
           echo "Detected jar path: $JAR_PATH"
           if [ -n "$JAR_PATH" ]; then
             ABS_JAR_PATH=$(realpath "$JAR_PATH")
-            SAFE_JAR_PATH="$GITHUB_WORKSPACE/build/libs/cat-on-watermelon.jar"
+            VERSION_SAFE=$(echo "$VERSION" | tr '.' '-')
+            SAFE_JAR_PATH="$GITHUB_WORKSPACE/build/libs/cat-on-watermelon-$VERSION_SAFE.jar"
             cp "$ABS_JAR_PATH" "$SAFE_JAR_PATH"
             echo "Safe jar path: $SAFE_JAR_PATH"
             echo "jar_path=$SAFE_JAR_PATH" >> "$GITHUB_OUTPUT"
-            echo "artifact_name=cat-on-watermelon-$VERSION" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=cat-on-watermelon-$VERSION_SAFE" >> "$GITHUB_OUTPUT"
           else
             echo "jar_path=" >> "$GITHUB_OUTPUT"
             echo "artifact_name=cat-on-watermelon" >> "$GITHUB_OUTPUT"
