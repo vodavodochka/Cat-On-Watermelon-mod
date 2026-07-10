@@ -26,27 +26,28 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: |
+          rm -f build/libs/*.jar
+          ./gradlew build
 
       - name: Find built jar
         id: find_jar
         run: |
           echo "Current directory: $(pwd)"
-          echo "Repository contents:"
-          ls -la
-          echo "Looking for jars..."
-          find . -type f \( -name '*.jar' -o -name '*.zip' \) | sort | head -n 200
-          JAR_PATH=$(find . -type f -name '*.jar' | head -n 1)
-          if [ -n "$JAR_PATH" ]; then
-            echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+          VERSION=$(python3 -c "import json, pathlib; p = pathlib.Path('src/main/resources/mcmod.info'); data = json.loads(p.read_text(encoding='utf-8')); print(data[0]['version'] if isinstance(data, list) else data.get('version', '0.0.0'))")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ -f "build/libs/catOnWatermelon-$VERSION.jar" ]; then
+            echo "jar_path=build/libs/catOnWatermelon-$VERSION.jar" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=cat-on-watermelon-$VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "jar_path=" >> "$GITHUB_OUTPUT"
+            echo "artifact_name=cat-on-watermelon" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload Artifact
         if: steps.find_jar.outputs.jar_path != ''
         uses: actions/upload-artifact@v4
         with:
-          name: mod-build
+          name: ${{ steps.find_jar.outputs.artifact_name }}
           path: ${{ steps.find_jar.outputs.jar_path }}
           if-no-files-found: error
