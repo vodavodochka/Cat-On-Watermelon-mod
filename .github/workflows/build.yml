@@ -31,10 +31,17 @@ jobs:
       - name: Find built jar
         id: find_jar
         run: |
+          echo "Current directory: $(pwd)"
+          echo "Repository contents:"
+          ls -la
           echo "Looking for jars..."
-          find build -type f \( -name '*.jar' -o -name '*.zip' \) | sort
-          JAR_PATH=$(find build -type f -name '*.jar' | head -n 1)
-          echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+          find . -type f \( -name '*.jar' -o -name '*.zip' \) | sort | head -n 200
+          JAR_PATH=$(find . -type f -name '*.jar' | head -n 1)
+          if [ -n "$JAR_PATH" ]; then
+            echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+          else
+            echo "jar_path=" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload Artifact
         if: steps.find_jar.outputs.jar_path != ''
