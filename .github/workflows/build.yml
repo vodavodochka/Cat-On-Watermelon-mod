@@ -36,8 +36,10 @@ jobs:
           echo "Current directory: $(pwd)"
           VERSION=$(python3 -c "import json, pathlib; p = pathlib.Path('src/main/resources/mcmod.info'); data = json.loads(p.read_text(encoding='utf-8')); print(data[0]['version'] if isinstance(data, list) else data.get('version', '0.0.0'))")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Contents of build/libs:"
           ls -la build/libs || true
-          JAR_PATH=$(find build/libs -maxdepth 1 -type f -name 'catOnWatermelon-*.jar' | head -n 1)
+          JAR_PATH=$(find build/libs -maxdepth 1 -type f -name '*.jar' | head -n 1)
+          echo "Detected jar path: $JAR_PATH"
           if [ -n "$JAR_PATH" ]; then
             echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
             echo "artifact_name=cat-on-watermelon-$VERSION" >> "$GITHUB_OUTPUT"
