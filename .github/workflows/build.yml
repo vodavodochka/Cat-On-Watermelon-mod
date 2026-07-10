@@ -50,10 +50,22 @@ jobs:
             echo "artifact_name=cat-on-watermelon" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Upload Artifact
+      - name: Verify built jar exists
+        if: steps.find_jar.outputs.jar_path != ''
+        shell: bash
+        run: |
+          echo "Uploading artifact from: ${{ steps.find_jar.outputs.jar_path }}"
+          if [ -f "${{ steps.find_jar.outputs.jar_path }}" ]; then
+            echo "Jar file exists"
+          else
+            echo "Jar file does not exist"
+            exit 1
+          fi
+
+      - name: Upload Artifact Files
         if: steps.find_jar.outputs.jar_path != ''
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.find_jar.outputs.artifact_name }}
-          path: ${{ steps.find_jar.outputs.jar_path }}
+          path: build/libs/
           if-no-files-found: error
