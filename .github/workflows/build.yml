@@ -29,7 +29,7 @@ jobs:
           rm -f build/libs/*.jar
           ./gradlew build
 
-      - name: Find built jar
+      - name: Find and prepare built jar
         id: find_jar
         shell: bash
         run: |
@@ -42,8 +42,10 @@ jobs:
           echo "Detected jar path: $JAR_PATH"
           if [ -n "$JAR_PATH" ]; then
             ABS_JAR_PATH=$(realpath "$JAR_PATH")
-            echo "Absolute jar path: $ABS_JAR_PATH"
-            echo "jar_path=$ABS_JAR_PATH" >> "$GITHUB_OUTPUT"
+            SAFE_JAR_PATH="$GITHUB_WORKSPACE/build/libs/cat-on-watermelon.jar"
+            cp "$ABS_JAR_PATH" "$SAFE_JAR_PATH"
+            echo "Safe jar path: $SAFE_JAR_PATH"
+            echo "jar_path=$SAFE_JAR_PATH" >> "$GITHUB_OUTPUT"
             echo "artifact_name=cat-on-watermelon-$VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "jar_path=" >> "$GITHUB_OUTPUT"
@@ -67,5 +69,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.find_jar.outputs.artifact_name }}
-          path: build/libs/
+          path: ${{ steps.find_jar.outputs.jar_path }}
           if-no-files-found: error
