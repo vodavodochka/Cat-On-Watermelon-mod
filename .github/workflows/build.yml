@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,6 +31,7 @@ jobs:
 
       - name: Find built jar
         id: find_jar
+        shell: bash
         run: |
           echo "Current directory: $(pwd)"
           VERSION=$(python3 -c "import json, pathlib; p = pathlib.Path('src/main/resources/mcmod.info'); data = json.loads(p.read_text(encoding='utf-8')); print(data[0]['version'] if isinstance(data, list) else data.get('version', '0.0.0'))")
