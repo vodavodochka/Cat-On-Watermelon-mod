@@ -41,7 +41,9 @@ jobs:
           JAR_PATH=$(find build/libs -maxdepth 1 -type f -name '*.jar' | head -n 1)
           echo "Detected jar path: $JAR_PATH"
           if [ -n "$JAR_PATH" ]; then
-            echo "jar_path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+            ABS_JAR_PATH=$(realpath "$JAR_PATH")
+            echo "Absolute jar path: $ABS_JAR_PATH"
+            echo "jar_path=$ABS_JAR_PATH" >> "$GITHUB_OUTPUT"
             echo "artifact_name=cat-on-watermelon-$VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "jar_path=" >> "$GITHUB_OUTPUT"
