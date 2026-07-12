@@ -1,35 +1,24 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        // Add the community repository containing the fixed plugin
-        maven {
-            name = "anatawa12-public"
-            url = "https://anatawa12.com"
-        }
-        maven {
-            name = "forge"
-            url = "https://maven.minecraftforge.net/"
-        }
-    }
-    dependencies {
-        // Replace the broken official 1.2-SNAPSHOT with the updated fork
-        classpath 'com.anatawa12.forge:ForgeGradle:1.2-1.0.1+'
-    }
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.gtnewhorizons.retrofuturagradle' version '2.0.2'
 }
-apply plugin: 'forge'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 def mcmodInfoFile = file('src/main/resources/mcmod.info')
-def mcmodInfo = new groovy.json.JsonSlurper().parseText(mcmodInfoFile.getText('UTF-8'))
+def mcmodInfo = new JsonSlurper().parseText(mcmodInfoFile.getText('UTF-8'))
 
 def modVersion = mcmodInfo.version ?: '0.0.0'
+base.archivesName = "cat-on-watermelon"
 
 version = modVersion
 group= "com.vodavodochka.catOnWatermelon" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "catOnWatermelon"
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse"
+    mcVersion = "1.7.10" // RFG pulls forge
 }
 
 dependencies {
@@ -50,16 +39,19 @@ dependencies {
 
 processResources
 {
+    // Required for modern Gradle (7.0+) to prevent failure on duplicate resources
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", project.minecraft.mcVersion
 
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version, 'mcversion':project.minecraft.mcVersion
     }
         
     // copy everything else, thats not the mcmod.info

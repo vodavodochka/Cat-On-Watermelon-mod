@@ -1,0 +1,17 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = "GTNH Maven"
+            url = "https://nexus.gtnewhorizons.com/repository/public/"
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    // Tells Gradle how to automatically download missing JDKs (like Java 8)
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'cat-on-watermelon'
