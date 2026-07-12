@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id 'java'
     id 'idea'
@@ -7,7 +9,7 @@ plugins {
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 def mcmodInfoFile = file('src/main/resources/mcmod.info')
-def mcmodInfo = new groovy.json.JsonSlurper().parseText(mcmodInfoFile.getText('UTF-8'))
+def mcmodInfo = new JsonSlurper().parseText(mcmodInfoFile.getText('UTF-8'))
 
 def modVersion = mcmodInfo.version ?: '0.0.0'
 base.archivesName = "cat-on-watermelon"
