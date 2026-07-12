@@ -19,11 +19,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8'
+          java-version: '26'
           cache: gradle
 
       - name: Grant execute permission for gradlew
@@ -43,7 +43,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Contents of build/libs:"
           ls -la build/libs || true
-          JAR_PATH=$(find build/libs -maxdepth 1 -type f -name '*.jar' | head -n 1)
+          JAR_PATH=$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' | head -n 1)
           echo "Detected jar path: $JAR_PATH"
           if [ -n "$JAR_PATH" ]; then
             ABS_JAR_PATH=$(realpath "$JAR_PATH")
