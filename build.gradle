@@ -10,6 +10,7 @@ def mcmodInfoFile = file('src/main/resources/mcmod.info')
 def mcmodInfo = new groovy.json.JsonSlurper().parseText(mcmodInfoFile.getText('UTF-8'))
 
 def modVersion = mcmodInfo.version ?: '0.0.0'
+base.archivesName = "cat-on-watermelon"
 
 version = modVersion
 group= "com.vodavodochka.catOnWatermelon" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

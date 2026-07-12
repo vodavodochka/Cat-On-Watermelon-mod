@@ -34,49 +34,16 @@ jobs:
           rm -f build/libs/*.jar
           ./gradlew build
 
-      - name: Find and prepare built jar
-        id: find_jar
-        shell: bash
-        run: |
-          echo "Current directory: $(pwd)"
-          VERSION=$(python3 -c "import json, pathlib; p = pathlib.Path('src/main/resources/mcmod.info'); data = json.loads(p.read_text(encoding='utf-8')); print(data[0]['version'] if isinstance(data, list) else data.get('version', '0.0.0'))")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Contents of build/libs:"
-          ls -la build/libs || true
-          JAR_PATH=$(find build/libs -maxdepth 1 -type f -name '*.jar' ! -name '*-dev.jar' ! -name '*-sources.jar' | head -n 1)
-          echo "Detected jar path: $JAR_PATH"
-          if [ -n "$JAR_PATH" ]; then
-            ABS_JAR_PATH=$(realpath "$JAR_PATH")
-            VERSION_SAFE=$(echo "$VERSION" | tr '.' '-')
-            SAFE_JAR_PATH="$GITHUB_WORKSPACE/build/libs/cat-on-watermelon-$VERSION_SAFE.jar"
-            cp "$ABS_JAR_PATH" "$SAFE_JAR_PATH"
-            echo "Safe jar path: $SAFE_JAR_PATH"
-            echo "jar_path=$SAFE_JAR_PATH" >> "$GITHUB_OUTPUT"
-            echo "artifact_name=cat-on-watermelon-$VERSION_SAFE" >> "$GITHUB_OUTPUT"
-          else
-            echo "jar_path=" >> "$GITHUB_OUTPUT"
-            echo "artifact_name=cat-on-watermelon" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Verify built jar exists
-        if: steps.find_jar.outputs.jar_path != ''
-        shell: bash
-        run: |
-          echo "Uploading artifact from: ${{ steps.find_jar.outputs.jar_path }}"
-          if [ -f "${{ steps.find_jar.outputs.jar_path }}" ]; then
-            echo "Jar file exists"
-          else
-            echo "Jar file does not exist"
-            exit 1
-          fi
+      - name: Extract Version
+        id: get_version
+        run: echo "VERSION=$(./gradlew properties -q | grep '^version:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        if: github.event_name != 'pull_request' && steps.find_jar.outputs.jar_path != ''
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.find_jar.outputs.version }}
-          name: Release ${{ steps.find_jar.outputs.version }}
-          files: |
-            ${{ steps.find_jar.outputs.jar_path }}
+          tag_name: v${{ env.VERSION }}
+          name: Release ${{ env.VERSION }}
+          files: build/libs/*[!dev][!sources].jar
           draft: false
           prerelease: false
