@@ -2,6 +2,8 @@ package vodavodochka.catonwatermelon.registry;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.AchievementPage;
@@ -26,6 +28,7 @@ public final class ModContent {
         registerBlocks();
         registerItems();
         registerAchievements();
+        registerRecipes();
     }
 
     public static void registerItems() {
@@ -58,6 +61,16 @@ public final class ModContent {
                 new AchievementPage("Cat On Watermelon", new Achievement[] { eatFlowerSandwichAchievement })
         );
         flowerSandwich.setAchievement(eatFlowerSandwichAchievement);
+    }
+
+    public static void registerRecipes() {
+        // "F" represents the Fish. We arrange it in a hollow 3x3 square (like a furnace).
+        GameRegistry.addRecipe(new ItemStack(blockWalrus),
+                "FFF",
+                "F F",
+                "FFF",
+                'F', new ItemStack(Items.fish, 1, 0) // Items.fish with metadata 0 is Raw Cod
+        );
     }
 
     private static void registerWalrus() {
