@@ -35,11 +35,6 @@ public class BlockWalrus extends BlockEC {
     }
 
     @Override
-    public String getUnlocalizedName() {
-        return super.getUnlocalizedName().replace("tile.", "");
-    }
-
-    @Override
     public boolean isOpaqueCube() {
         return false;
     }
