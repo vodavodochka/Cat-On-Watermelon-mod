@@ -1,5 +1,6 @@
 /eclipse
 /.gradle
+/build
 /out
 cat_on_watermelon.iml
 cat_on_watermelon.ipr

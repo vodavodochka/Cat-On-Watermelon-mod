@@ -5,17 +5,22 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraftforge.common.AchievementPage;
+import vodavodochka.catonwatermelon.Block.BlockEC;
+import vodavodochka.catonwatermelon.Block.BlockWalrus;
 import vodavodochka.catonwatermelon.items.FlowerSandwich;
 import vodavodochka.catonwatermelon.lib.ModVars;
+import vodavodochka.catonwatermelon.tileentity.TileEntityWalrus;
 
 public final class ModContent {
     public static FlowerSandwich flowerSandwich;
     public static Achievement eatFlowerSandwichAchievement;
+    public static BlockWalrus blockWalrus;
 
     private ModContent() {
     }
 
     public static void register() {
+        registerBlocks();
         registerItems();
         registerAchievements();
     }
@@ -27,6 +32,17 @@ public final class ModContent {
                 .setCreativeTab(CreativeTabs.tabFood);
 
         GameRegistry.registerItem(flowerSandwich, "flower_sandwich");
+    }
+
+    public static void registerBlocks() {
+        blockWalrus = new BlockWalrus();
+
+        // Change setUnlocalizedName to setBlockName
+        blockWalrus.setBlockName("walrus");
+        blockWalrus.setCreativeTab(CreativeTabs.tabFood);
+
+        GameRegistry.registerBlock(blockWalrus, "walrus");
+        GameRegistry.registerTileEntity(TileEntityWalrus.class, "tileEntityWalrus");
     }
 
     public static void registerAchievements() {
