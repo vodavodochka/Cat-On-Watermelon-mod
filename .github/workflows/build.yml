@@ -39,7 +39,7 @@ jobs:
         run: echo "VERSION=$(./gradlew properties -q | grep '^version:' | awk '{print $2}')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ env.VERSION }}
