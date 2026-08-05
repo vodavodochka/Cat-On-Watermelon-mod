@@ -2,6 +2,7 @@ package vodavodochka.catonwatermelon.registry;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
@@ -70,6 +71,15 @@ public final class ModContent {
                 "F F",
                 "FFF",
                 'F', new ItemStack(Items.fish, 1, 0) // Items.fish with metadata 0 is Raw Cod
+        );
+
+        GameRegistry.addRecipe(new ItemStack(flowerSandwich),
+                " B ",
+                "RY ",
+                " B ",
+                'B', Items.bread,
+                'R', Blocks.red_flower,
+                'Y', Blocks.yellow_flower
         );
     }
 
